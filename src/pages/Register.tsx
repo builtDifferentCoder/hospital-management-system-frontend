@@ -1,18 +1,27 @@
-import { Button, PasswordInput, TextInput } from "@mantine/core";
+import {
+  Button,
+  PasswordInput,
+  SegmentedControl,
+  TextInput,
+} from "@mantine/core";
 import { IconHeartbeat } from "@tabler/icons-react";
 import { useForm } from "@mantine/form";
 import { Link } from "react-router";
 
-const Login = () => {
+const Register = () => {
   const form = useForm({
     initialValues: {
+      type: "PATIENT",
       email: "",
       password: "",
+      confrimPassword: "",
     },
 
     validate: {
       email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
       password: (value) => (!value ? "Password is required" : null),
+      confrimPassword: (value, values) =>
+        value === values.password ? null : "Password's don't match",
     },
   });
   const handleSubmit = (values: typeof form.values) => {
@@ -34,8 +43,22 @@ const Login = () => {
           className="flex flex-col gap-5 [&_input]:placeholder-neutral-100 [&_.mantine-Input-input]:!border-white focus-within:[&_.mantine-Input-input]:!border-pink-400 [&_.mantine-Input-input]:!border [&_input]:!pl-2  [&_svg]:!text-[var(--color-light)] [&_input]:!text-[var(--color-light)]"
         >
           <div className="self-center font-medium text-[var(--color-light)] text-2xl">
-            Login
+            Register
           </div>
+          <SegmentedControl
+            fullWidth
+            size="md"
+            radius="md"
+            color="pink"
+            bg="none"
+            className="[&_*]:!text-[var-(--color-white)] border border-white"
+            data={[
+              { label: "Patient", value: "PATIENT" },
+              { label: "Doctor", value: "DOCTOR" },
+              { label: "Admin", value: "ADMIN" },
+            ]}
+            {...form.getInputProps("type")}
+          />
           <TextInput
             className="transition duration-300"
             variant="unstyled"
@@ -52,11 +75,19 @@ const Login = () => {
             placeholder="Password"
             {...form.getInputProps("password")}
           />
+          <PasswordInput
+            className="transition duration-300"
+            variant="unstyled"
+            size="md"
+            radius="md"
+            placeholder="Confrim Password"
+            {...form.getInputProps("confirmPassword")}
+          />
           <Button type="submit" color="pink" radius="md" size="md">
-            Login
+            Register
           </Button>
           <div className="text-neutral-100 text-sm self-center hover:underline">
-            Don't have an account? <Link to="/register">Register</Link>
+            Already have an account? <Link to="/login">Login</Link>
           </div>
         </form>
       </div>
@@ -64,4 +95,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;
