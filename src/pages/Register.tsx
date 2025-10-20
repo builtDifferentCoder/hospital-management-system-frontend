@@ -6,26 +6,41 @@ import {
 } from "@mantine/core";
 import { IconHeartbeat } from "@tabler/icons-react";
 import { useForm } from "@mantine/form";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { registerUser } from "../service/UserService";
+import {
+  errorNotification,
+  successNotification,
+} from "../utils/NotificationUtil";
 
 const Register = () => {
+  const navigate = useNavigate();
   const form = useForm({
     initialValues: {
+      name: "john doe",
       type: "PATIENT",
       email: "",
       password: "",
-      confrimPassword: "",
+      confirmPassword: "",
     },
 
     validate: {
+      name: (value) => (!value ? "Name is required" : null),
       email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
       password: (value) => (!value ? "Password is required" : null),
-      confrimPassword: (value, values) =>
+      confirmPassword: (value, values) =>
         value === values.password ? null : "Password's don't match",
     },
   });
   const handleSubmit = (values: typeof form.values) => {
-    console.log(values);
+    registerUser(values)
+      .then((_data) => {
+        successNotification("Registered successfully.");
+        navigate("/login");
+      })
+      .catch((err) => {
+        errorNotification(err.response.data.errorMessage);
+      });
   };
   return (
     <div
@@ -58,6 +73,14 @@ const Register = () => {
               { label: "Admin", value: "ADMIN" },
             ]}
             {...form.getInputProps("type")}
+          />
+          <TextInput
+            className="transition duration-300"
+            variant="unstyled"
+            size="md"
+            radius="md"
+            placeholder="john doe"
+            {...form.getInputProps("name")}
           />
           <TextInput
             className="transition duration-300"

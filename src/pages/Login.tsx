@@ -1,9 +1,15 @@
 import { Button, PasswordInput, TextInput } from "@mantine/core";
 import { IconHeartbeat } from "@tabler/icons-react";
 import { useForm } from "@mantine/form";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { loginUser } from "../service/UserService";
+import {
+  errorNotification,
+  successNotification,
+} from "../utils/NotificationUtil";
 
 const Login = () => {
+  const navigate = useNavigate();
   const form = useForm({
     initialValues: {
       email: "",
@@ -16,7 +22,14 @@ const Login = () => {
     },
   });
   const handleSubmit = (values: typeof form.values) => {
-    console.log(values);
+    loginUser(values)
+      .then((_data) => {
+        successNotification("Logged in successfully.");
+        navigate("/");
+      })
+      .catch((err) => {
+        errorNotification(err.response.data.errorMessage);
+      });
   };
   return (
     <div
