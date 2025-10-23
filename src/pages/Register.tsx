@@ -18,7 +18,7 @@ const Register = () => {
   const form = useForm({
     initialValues: {
       name: "john doe",
-      type: "PATIENT",
+      role: "PATIENT",
       email: "",
       password: "",
       confirmPassword: "",
@@ -72,7 +72,7 @@ const Register = () => {
               { label: "Doctor", value: "DOCTOR" },
               { label: "Admin", value: "ADMIN" },
             ]}
-            {...form.getInputProps("type")}
+            {...form.getInputProps("role")}
           />
           <TextInput
             className="transition duration-300"

@@ -7,9 +7,14 @@ import {
   errorNotification,
   successNotification,
 } from "../utils/NotificationUtil";
+import { useDispatch } from "react-redux";
+import { setJwt } from "../slices/JwtSlice";
+import { jwtDecode } from "jwt-decode";
+import { setUser } from "../slices/UserSlice";
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const form = useForm({
     initialValues: {
       email: "",
@@ -24,7 +29,10 @@ const Login = () => {
   const handleSubmit = (values: typeof form.values) => {
     loginUser(values)
       .then((_data) => {
+        jwtDecode(_data);
         successNotification("Logged in successfully.");
+        dispatch(setJwt(_data));
+        dispatch(setUser(jwtDecode(_data)));
         navigate("/");
       })
       .catch((err) => {
